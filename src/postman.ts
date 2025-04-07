@@ -6,12 +6,15 @@ import type { PostmanCollection, PostmanCollectionResponse, PostmanEnvironment, 
 
 dotenv.config();
 
-export async function getEnvironment(environmentName: string) {
+export async function getEnvironment(environmentName: string, postmanApiKey?: string, workspaceId?: string) {
+  const apiKey = postmanApiKey || process.env.POSTMAN_API_KEY;
+  const activeWorkspaceId = workspaceId || process.env.POSTMAN_ACTIVE_WORKSPACE_ID;
+
   const workspaceResponse = await axios({
     method: 'get',
-    url: `https://api.getpostman.com/workspaces/${process.env.POSTMAN_ACTIVE_WORKSPACE_ID}`,
+    url: `https://api.getpostman.com/workspaces/${activeWorkspaceId}`,
     headers: {
-      'X-Api-Key': process.env.POSTMAN_API_KEY
+      'X-Api-Key': apiKey
     }
   });
 
@@ -24,52 +27,41 @@ export async function getEnvironment(environmentName: string) {
     throw new Error(`Environment ${environmentName} not found`);
   }
 
-  console.log(`Updating existing environment: ${environmentName}`);
   const response = await axios({
     method: 'get',
     url: `https://api.getpostman.com/environments/${environment.id}`,
     headers: {
-      'X-Api-Key': process.env.POSTMAN_API_KEY,
+      'X-Api-Key': apiKey,
       'Content-Type': 'application/json'
     }
   });
 
-  console.log(JSON.stringify(response.data, null, 2));
-
   return response.data.environment as PostmanEnvironment;
 }
 
-export async function pushEnvironment(environmentName: string, envVars: Record<string, string>): Promise<void> {
+export async function pushEnvironment(environmentName: string, envVars: Record<string, string>, postmanApiKey?: string, workspaceId?: string): Promise<void> {
   try {
-    console.log(`Creating/Updating environment: ${environmentName}`);
+    const apiKey = postmanApiKey || process.env.POSTMAN_API_KEY;
+    const activeWorkspaceId = workspaceId || process.env.POSTMAN_ACTIVE_WORKSPACE_ID;
 
-    console.log("Environment variables:")
-    console.log(`POSTMAN_API_KEY: ${process.env.POSTMAN_API_KEY}`);
-    console.log(`POSTMAN_ACTIVE_WORKSPACE_ID: ${process.env.POSTMAN_ACTIVE_WORKSPACE_ID}`);
-    
     // Read all environment variables except POSTMAN_API_KEY and POSTMAN_ACTIVE_WORKSPACE_ID
     const envValues: EnvValue[] = [];
     
-      for (const [key, value] of Object.entries(envVars)) {
-          envValues.push({
-              key,
-              value,
-              enabled: true,
-              type: key.includes('token') ? 'secret' : 'default'
-          });
-      }
+    for (const [key, value] of Object.entries(envVars)) {
+        envValues.push({
+            key,
+            value,
+            enabled: true,
+            type: key.includes('token') ? 'secret' : 'default'
+        });
+    }
 
     // Check if environment already exists
-    console.log('Checking if environment already exists...');
-
-
-    // Check if environment already exists
-    console.log('Checking if environment already exists...');
     const workspaceResponse = await axios({
       method: 'get',
-      url: `https://api.getpostman.com/workspaces/${process.env.POSTMAN_ACTIVE_WORKSPACE_ID}`,
+      url: `https://api.getpostman.com/workspaces/${activeWorkspaceId}`,
       headers: {
-        'X-Api-Key': process.env.POSTMAN_API_KEY
+        'X-Api-Key': apiKey
       }
     });
     
@@ -88,45 +80,44 @@ export async function pushEnvironment(environmentName: string, envVars: Record<s
 
     let response;
     if (existingEnvironment) {
-      console.log(`Updating existing environment: ${environmentName}`);
       response = await axios({
         method: 'put',
         url: `https://api.getpostman.com/environments/${existingEnvironment.id}`,
         headers: {
-          'X-Api-Key': process.env.POSTMAN_API_KEY,
+          'X-Api-Key': apiKey,
           'Content-Type': 'application/json'
         },
         data: environmentData
       });
     } else {
-      console.log(`Creating new environment: ${environmentName}`);
       response = await axios({
         method: 'post',
         url: 'https://api.getpostman.com/environments',
         headers: {
-          'X-Api-Key': process.env.POSTMAN_API_KEY,
+          'X-Api-Key': apiKey,
           'Content-Type': 'application/json'
         },
         data: {
           ...environmentData,
-          workspace: process.env.POSTMAN_ACTIVE_WORKSPACE_ID
+          workspace: activeWorkspaceId
         }
       });
     }
     
-    console.log(`Environment ${environmentName} successfully ${existingEnvironment ? 'updated' : 'created'}`);
   } catch (error) {
-    console.error('Error in pushEnvironment:', error);
     throw error;
   }
 }
 
-export async function getCollection(collectionName: string) {
+export async function getCollection(collectionName: string, postmanApiKey?: string, workspaceId?: string) {
+  const apiKey = postmanApiKey || process.env.POSTMAN_API_KEY;
+  const activeWorkspaceId = workspaceId || process.env.POSTMAN_ACTIVE_WORKSPACE_ID;
+
   const workspaceResponse = await axios({
     method: 'get',
-    url: `https://api.getpostman.com/workspaces/${process.env.POSTMAN_ACTIVE_WORKSPACE_ID}`,
+    url: `https://api.getpostman.com/workspaces/${activeWorkspaceId}`,
     headers: {
-      'X-Api-Key': process.env.POSTMAN_API_KEY
+      'X-Api-Key': apiKey
     }
   });
 
@@ -143,32 +134,31 @@ export async function getCollection(collectionName: string) {
     method: 'get',
     url: `https://api.getpostman.com/collections/${collection.id}`,
     headers: {
-      'X-Api-Key': process.env.POSTMAN_API_KEY
+      'X-Api-Key': apiKey
     }
   });
 
   return collectionResponse.data.collection as PostmanCollection;
 }
 
-export async function pushCollection(collectionRequest: PostmanCollectionRequest): Promise<void> {
+export async function pushCollection(collectionRequest: PostmanCollectionRequest, postmanApiKey?: string, workspaceId?: string): Promise<void> {
     try {
-        console.log('Pushing collection to Postman...');
+        const apiKey = postmanApiKey || process.env.POSTMAN_API_KEY;
+        const activeWorkspaceId = workspaceId || process.env.POSTMAN_ACTIVE_WORKSPACE_ID;
 
         // Create collection container
         const containerRequestBody = {
             collection: collectionRequest,
-            workspace: process.env.POSTMAN_ACTIVE_WORKSPACE_ID
+            workspace: activeWorkspaceId
         };
 
         // Check if collection already exists
-        console.log('Checking if collection already exists...');
-        console.log(`workspace is: ${process.env.POSTMAN_ACTIVE_WORKSPACE_ID}`);
         try {
             const workspaceResponse = await axios({
                 method: 'get',
-                url: `https://api.getpostman.com/workspaces/${process.env.POSTMAN_ACTIVE_WORKSPACE_ID}`,
+                url: `https://api.getpostman.com/workspaces/${activeWorkspaceId}`,
                 headers: {
-                    'X-Api-Key': process.env.POSTMAN_API_KEY
+                    'X-Api-Key': apiKey
                 }
             });
     
@@ -182,10 +172,8 @@ export async function pushCollection(collectionRequest: PostmanCollectionRequest
 
         let response;
         if (existingCollection) {
-            console.log(`Updating existing collection: ${collectionRequest.info.name}`);
-            
             // Reuse getCollection to fetch existing collection data
-            const existingCollectionData = await getCollection(collectionRequest.info.name);
+            const existingCollectionData = await getCollection(collectionRequest.info.name, apiKey, activeWorkspaceId);
             
             // Helper function to normalize request for comparison
             const normalizeRequest = (request: PostmanRequest) => {
@@ -215,7 +203,7 @@ export async function pushCollection(collectionRequest: PostmanCollectionRequest
             }
 
             // Merge the collections
-            const mergedCollection = {
+            const mergedCollection: PostmanCollectionRequest = {
                 info: {
                     ...existingCollectionData.info,
                     ...collectionRequest.info
@@ -225,7 +213,11 @@ export async function pushCollection(collectionRequest: PostmanCollectionRequest
                 event: [...(existingCollectionData.event || []), ...(collectionRequest.event || [])]
             };
 
-            console.log('Merged collection:');
+            // remove `auth` if it is empty
+            if (mergedCollection.auth && Object.keys(mergedCollection.auth).length === 0) {
+                delete mergedCollection.auth;
+            }
+
             // console.log(JSON.stringify(mergedCollection, null, 2));
 
             // Update with merged data
@@ -233,28 +225,31 @@ export async function pushCollection(collectionRequest: PostmanCollectionRequest
                 method: 'put',
                 url: `https://api.getpostman.com/collections/${existingCollection.id}`,
                 headers: {
-                    'X-Api-Key': process.env.POSTMAN_API_KEY,
+                    'X-Api-Key': apiKey,
                     'Content-Type': 'application/json'
                 },
                 data: {
                     collection: mergedCollection,
-                    workspace: process.env.POSTMAN_ACTIVE_WORKSPACE_ID
+                    workspace: activeWorkspaceId
                 }
             });
         } else {
-            console.log(`Creating new collection: ${collectionRequest.info.name}`);
+            // Remove `auth` if it is empty
+            if (containerRequestBody.collection.auth && Object.keys(containerRequestBody.collection.auth).length === 0) {
+                delete containerRequestBody.collection.auth;
+            }
+
             response = await axios({
                 method: 'post',
                 url: 'https://api.getpostman.com/collections',
                 headers: {
-                    'X-Api-Key': process.env.POSTMAN_API_KEY,
+                    'X-Api-Key': apiKey,
                     'Content-Type': 'application/json'
                 },
                 data: containerRequestBody
             });
         }
 
-        console.log(`Collection ${collectionRequest.info.name} successfully ${existingCollection ? 'updated' : 'created'}`);
     } catch (error) {
         console.error('Error in pushCollection:', error);
         throw error;

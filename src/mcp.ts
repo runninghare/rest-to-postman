@@ -392,7 +392,7 @@ class PostmanMcpServer {
               throw new McpError(ErrorCode.InvalidParams, "Missing arguments");
             }
             const { envName, envVars } = request.params.arguments as { envName: string; envVars: Record<string, string> };
-            await pushEnvironment(envName, envVars);
+            await pushEnvironment(envName, envVars, process.env.POSTMAN_API_KEY, process.env.POSTMAN_ACTIVE_WORKSPACE_ID);
             return {
               content: [{
                 type: "text",
@@ -404,7 +404,7 @@ class PostmanMcpServer {
               throw new McpError(ErrorCode.InvalidParams, "Missing arguments");
             }
             const { collectionRequest } = request.params.arguments as { collectionRequest: PostmanCollectionRequest };
-            await pushCollection(collectionRequest);
+            await pushCollection(collectionRequest, process.env.POSTMAN_API_KEY, process.env.POSTMAN_ACTIVE_WORKSPACE_ID);
             return {
               content: [{
                 type: "text",
@@ -465,6 +465,18 @@ class PostmanMcpServer {
 const args = process.argv.slice(2);
 const useSSE = args.includes('--sse');
 const useStdio = args.includes('--stdio') || !useSSE; // Default to stdio if neither is specified
+
+// Parse Postman credentials from CLI
+const postmanApiKeyIndex = args.indexOf('--postman-api-key');
+const postmanWorkspaceIdIndex = args.indexOf('--postman-workspace-id');
+
+if (postmanApiKeyIndex !== -1 && args[postmanApiKeyIndex + 1]) {
+  process.env.POSTMAN_API_KEY = args[postmanApiKeyIndex + 1];
+}
+
+if (postmanWorkspaceIdIndex !== -1 && args[postmanWorkspaceIdIndex + 1]) {
+  process.env.POSTMAN_ACTIVE_WORKSPACE_ID = args[postmanWorkspaceIdIndex + 1];
+}
 
 // Start the server
 const server = new PostmanMcpServer();

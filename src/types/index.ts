@@ -104,16 +104,7 @@ export interface PostmanCollectionRequest {
         description: string,
         schema: string
     },
-    auth?: {
-        type: string,
-        bearer: [
-            {
-                key: string,
-                value: string,
-                type: string
-            }
-        ]
-    },
+    auth?: Auth,
     item: PostmanRequest[],
     event?: ScriptEvent[]
 }
