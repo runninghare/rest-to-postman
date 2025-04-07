@@ -2,8 +2,14 @@
   "name": "nestjs-to-postman",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "build": "bun build --outfile=dist/run.js --target=node ./src/mcp.ts",
+    "dev": "bun run src/mcp.ts",
+    "startSSE": "ts-node-esm src/mcp.ts --sse"
+  },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "latest",
+    "@types/express": "^5.0.1"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"

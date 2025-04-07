@@ -42,6 +42,10 @@ export async function getEnvironment(environmentName: string) {
 export async function pushEnvironment(environmentName: string, envVars: Record<string, string>): Promise<void> {
   try {
     console.log(`Creating/Updating environment: ${environmentName}`);
+
+    console.log("Environment variables:")
+    console.log(`POSTMAN_API_KEY: ${process.env.POSTMAN_API_KEY}`);
+    console.log(`POSTMAN_ACTIVE_WORKSPACE_ID: ${process.env.POSTMAN_ACTIVE_WORKSPACE_ID}`);
     
     // Read all environment variables except POSTMAN_API_KEY and POSTMAN_ACTIVE_WORKSPACE_ID
     const envValues: EnvValue[] = [];
