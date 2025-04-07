@@ -60,7 +60,10 @@ export interface ScriptEvent {
   }
   
   export interface PostmanEnvironment {
+    id: string;
+    uuid: string;
     name: string;
+    isPublic: boolean;
     values: EnvValue[];
   }
   
@@ -111,5 +114,7 @@ export interface PostmanCollectionRequest {
             }
         ]
     },
-    item: PostmanRequest[]
+    item: PostmanRequest[],
+    event?: ScriptEvent[]
 }
+
