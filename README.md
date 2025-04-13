@@ -157,8 +157,8 @@ Note all the endpoints from the `Campaign` Controller are generated, along with 
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/rest-to-postman-mcp.git
-cd rest-to-postman-mcp
+git clone https://github.com/runninghare/rest-to-postman.git
+cd rest-to-postman
 ```
 
 2. Install dependencies:
