@@ -1,5 +1,7 @@
 {
   "name": "rest-to-postman",
+  "version": "1.0.0",
+  "description": "Convert REST API endpoints to Postman collections",
   "module": "index.ts",
   "type": "module",
   "scripts": {
@@ -18,5 +20,18 @@
     "@modelcontextprotocol/sdk": "^1.9.0",
     "axios": "^1.8.4",
     "dotenv": "^16.4.7"
+  },
+  "keywords": [
+    "rest",
+    "postman",
+    "api",
+    "collection",
+    "converter"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yourusername/rest-to-postman.git"
   }
 }
