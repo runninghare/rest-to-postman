@@ -1,5 +1,5 @@
 {
-  "name": "nestjs-to-postman",
+  "name": "rest-to-postman",
   "module": "index.ts",
   "type": "module",
   "scripts": {

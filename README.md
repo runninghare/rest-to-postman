@@ -1,4 +1,4 @@
-# nestjs-to-postman
+# rest-to-postman
 
 To install dependencies:
 

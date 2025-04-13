@@ -19,7 +19,7 @@ dotenv.config();
 
 const envExample = `
 {
-    "envName": "NestJS Environment",
+    "envName": "REST Environment",
     "envVars": {
         "API_URL": "https://api.example.com",
         "API_TOKEN": "secret-token-1"
@@ -30,8 +30,8 @@ const envExample = `
 const collectionExample = `
 {
     "info": {
-        "name": "NestJS Collection",
-        "description": "NestJS Collection", 
+        "name": "REST Collection",
+        "description": "REST Collection", 
         "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
     },
     "auth": {
@@ -80,8 +80,8 @@ const collectionExample = `
 
 const tools = [
   {
-    "name": "nestjs_to_postman_env",
-    "description": "Creates or updates a Postman environment with the provided environment variables. This tool helps synchronize your NestJS application's environment configuration with Postman. It supports both creating new environments and updating existing ones in your Postman workspace. Environment variables related to sensitive data (containing 'token' in their names) are automatically marked as secrets. Here's an example: \n\n" + envExample,
+    "name": "rest_to_postman_env",
+    "description": "Creates or updates a Postman environment with the provided environment variables. This tool helps synchronize your REST application's environment configuration with Postman. It supports both creating new environments and updating existing ones in your Postman workspace. Environment variables related to sensitive data (containing 'token' in their names) are automatically marked as secrets. Here's an example: \n\n" + envExample,
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -101,8 +101,8 @@ const tools = [
     }
   },
   {
-    "name": "nestjs_to_postman_collection",
-    "description": "Creates or updates a Postman collection with the provided collection configuration. This tool helps synchronize your NestJS API endpoints with Postman. When updating an existing collection, it intelligently merges the new endpoints with existing ones, avoiding duplicates while preserving custom modifications made in Postman. Here's an example: \n\n" + collectionExample,
+    "name": "rest_to_postman_collection",
+    "description": "Creates or updates a Postman collection with the provided collection configuration. This tool helps synchronize your REST API endpoints with Postman. When updating an existing collection, it intelligently merges the new endpoints with existing ones, avoiding duplicates while preserving custom modifications made in Postman. Here's an example: \n\n" + collectionExample,
     "inputSchema": {
       "type": "object",
       "properties": {
@@ -338,7 +338,7 @@ class PostmanMcpServer {
   constructor() {
     this.server = new Server(
       {
-        name: "nestjs-to-postman-mcp",
+        name: "rest-to-postman-mcp",
         version: "0.1.0"
       },
       {
@@ -387,7 +387,7 @@ class PostmanMcpServer {
         }
 
         try {
-          if (request.params.name === "nestjs_to_postman_env") {
+          if (request.params.name === "rest_to_postman_env") {
             if (!request.params.arguments) {
               throw new McpError(ErrorCode.InvalidParams, "Missing arguments");
             }
@@ -399,7 +399,7 @@ class PostmanMcpServer {
                 text: `Successfully created/updated Postman environment: ${envName}`
               }]
             };
-          } else if (request.params.name === "nestjs_to_postman_collection") {
+          } else if (request.params.name === "rest_to_postman_collection") {
             if (!request.params.arguments) {
               throw new McpError(ErrorCode.InvalidParams, "Missing arguments");
             }
