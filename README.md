@@ -140,6 +140,22 @@ Both tools return a success message confirming the creation/update of the Postma
     }]
 }
 ```
+### Use this MCP in Cursor
+
+You can use this MCP server in Cursor. Here's an example which generates a Postman Collection based on a Nest.js Typescript controller.
+
+__Prompt__: 
+```code
+Create a postman collection named "Campaign Endpoints" based on this next.js controller. The baseUrl is `http://localhost:7022`. The collection should have a Bear token which applies to all the endpoints
+```
+
+<img width="1620" alt="2025-04-13_18-10-50" src="https://github.com/user-attachments/assets/49dd7851-141e-4bef-bc23-252eb9922164" />
+
+Here's the automatically generated Postman Collection:
+
+<img width="848" alt="2025-04-13_18-17-34" src="https://github.com/user-attachments/assets/67db9328-7b16-4e9c-890d-ecd91931ff83" />
+
+Note all the endpoints from the `Campaign` Controller are generated, along with the Bear token setting.
 
 ## Development
 
