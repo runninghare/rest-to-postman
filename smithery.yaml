@@ -1,0 +1,31 @@
+# Smithery configuration file: https://smithery.ai/docs/config#smitheryyaml
+
+startCommand:
+  type: stdio
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required:
+      - postmanApiKey
+      - postmanActiveWorkspaceId
+    properties:
+      postmanApiKey:
+        type: string
+        description: Your Postman API Key
+      postmanActiveWorkspaceId:
+        type: string
+        description: Your active Postman Workspace ID
+  commandFunction:
+    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    |-
+    (config) => ({
+      command: 'bun',
+      args: ['run', 'dist/run.js'],
+      env: {
+        POSTMAN_API_KEY: config.postmanApiKey,
+        POSTMAN_ACTIVE_WORKSPACE_ID: config.postmanActiveWorkspaceId
+      }
+    })
+  exampleConfig:
+    postmanApiKey: dummy_api_key_123
+    postmanActiveWorkspaceId: dummy_workspace_id_456
