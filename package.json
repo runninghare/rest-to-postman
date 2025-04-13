@@ -1,9 +1,12 @@
 {
   "name": "rest-to-postman",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Convert REST API endpoints to Postman collections",
   "module": "index.ts",
   "type": "module",
+  "bin": {
+    "rest-to-postman": "./dist/run.js"
+  },
   "scripts": {
     "build": "bun build --outfile=dist/run.js --target=node ./src/mcp.ts",
     "dev": "bun run src/mcp.ts",

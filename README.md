@@ -31,25 +31,19 @@ To install REST-to-Postman MCP for Claude Desktop automatically via [Smithery](h
 npx -y @smithery/cli install @runninghare/rest-to-postman-mcp --client claude
 ```
 
-### Running the MCP Server
+### Running the MCP Server with `npx`
 
-To use the MCP server in production:
+To use the MCP server with `npx`:
 
-1. Install the package globally:
 ```bash
-npm install -g rest-to-postman-mcp
-```
-
-2. Run the server with your Postman credentials:
-```bash
-rest-to-postman-mcp --postman-api-key your_api_key --postman-workspace-id your_workspace_id
+npx -y rest-to-postman@latest --postman-api-key your_api_key --postman-workspace-id your_workspace_id
 ```
 
 Or use environment variables:
 ```bash
 export POSTMAN_API_KEY=your_api_key
 export POSTMAN_ACTIVE_WORKSPACE_ID=your_workspace_id
-rest-to-postman-mcp
+npx -y rest-to-postman@latest 
 ```
 
 You can integrate this command with various AI code editors that support MCP:
